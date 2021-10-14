@@ -1,0 +1,27 @@
+{
+  "compilerOptions": {
+    "declaration": true,
+    "module": "commonjs",
+    "noImplicitAny": true,
+    "removeComments": true,
+    "preserveConstEnums": true,
+    "sourceMap": true,
+    "target": "es5",
+    "lib": [
+      "es2015"
+    ],
+    "typeRoots": ["node_modules/@types", "./src/typings"],
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "strict": true
+  },
+  "include": [
+    "src/*.ts"
+  ],
+  "exclude": [
+    "./node_modules/**/*",
+    "./build/**/*"
+  ]
+}
+
