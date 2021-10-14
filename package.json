@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "description": "API to provide booking information",
   "author": {
-    "name": "Vince Tsugranes",
+    "name": "Chandan Gudla",
     "url": "https://github.com/srichandangv"
   },
   "main": "src/server.js",
