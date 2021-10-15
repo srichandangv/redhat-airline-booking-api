@@ -3,6 +3,21 @@ import { DATAGRID_HOST, DATAGRID_HOTROD_PORT } from '../config';
 import infinispan from 'infinispan';
 import log from '../log';
 
+// Cache configuration
+// {
+//   "distributed-cache": {
+//     "mode": "SYNC",
+//     "encoding": {
+//       "key": {
+//         "media-type": "text/plain"
+//       },
+//       "value": {
+//         "media-type": "text/plain"
+//       }
+//     }
+//   }
+// }
+
 export type DataGridEventHandle = (
   client: InfinispanClient,
   event: ClientEvent,

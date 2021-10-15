@@ -5,6 +5,34 @@ import log from '../log';
 
 const getClient = getDataGridClientForCacheNamed(DATAGRID_BOOKING_DATA_STORE);
 
+export async function getAllBookingsInCache(): Promise<
+  Array<Booking> | undefined
+> {
+  log.debug(`getAllBookingsInCache start...`);
+  let bookings: Booking[] = new Array<Booking>();
+  try {
+    const client = await getClient;
+    let iterator = await client.iterator(1);
+
+    // let entry = {done: true};
+    let entry = await iterator.next();
+
+    while (!entry.done) {
+      let booking = JSON.parse(entry.value);
+      console.log('iterator booking=' + booking);
+      bookings.push(booking);
+
+      entry = await iterator.next();
+    }
+
+    await iterator.close();
+    return bookings;
+  } catch (ex) {
+    log.error("couldn't get the client:" + ex);
+    return undefined;
+  }
+}
+
 /**
  * Returns an instance of a Airport from the cache, or undefined if the airport
  * was not found in the cache
@@ -13,7 +41,7 @@ const getClient = getDataGridClientForCacheNamed(DATAGRID_BOOKING_DATA_STORE);
 export async function getBookingInCache(
   booking_id: string
 ): Promise<Booking | undefined> {
-  log.debug(`getBookingInCache for bookking id: ${booking_id}`);
+  log.debug(`getBookingInCache for booking id: ${booking_id}`);
 
   let data = undefined;
   try {
@@ -51,7 +79,7 @@ export async function upsertBookingInCache(booking: Booking) {
 
   try {
     const client = await getClient;
-    return client.put(booking.id, data);
+    await client.put(booking.id, data);
   } catch (ex) {
     log.error("couldn't get the client:" + ex);
   }

@@ -11,7 +11,7 @@ export class Booking {
 
   random() {
     const randomElement =
-    bookingData.bookings[
+      bookingData.bookings[
         Math.floor(Math.random() * bookingData.bookings.length)
       ];
     let booking: Booking = new Booking();
