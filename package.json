@@ -38,6 +38,7 @@
     "luxon": "^1.27.0",
     "make-promises-safe": "~5.1.0",
     "morgan": "~1.10.0",
+    "nanoid": "^3.1.30",
     "pino": "~6.5.1"
   },
   "devDependencies": {

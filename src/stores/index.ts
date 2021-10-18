@@ -2,6 +2,7 @@ import { DATAGRID_BOOKING_DATA_STORE, NODE_ENV } from '../config';
 import getDataGridClientForCacheNamed from '../datagrid/client';
 import { Booking } from '../entity/booking';
 import log from '../log';
+import { nanoid } from 'nanoid';
 
 const getClient = getDataGridClientForCacheNamed(DATAGRID_BOOKING_DATA_STORE);
 
@@ -74,6 +75,9 @@ export async function getBookingInCache(
  */
 export async function upsertBookingInCache(booking: Booking) {
   log.debug(`upsertBookingInCache for ${booking.id}`);
+  if (!booking.id) {
+    booking.id = nanoid();
+  }
   const data = JSON.stringify(booking);
   log.debug(`with data : ` + data);
 
