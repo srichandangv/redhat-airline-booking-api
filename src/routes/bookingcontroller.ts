@@ -111,12 +111,17 @@ class ScheduleController {
       response.send(newBooking);
     } catch (ex) {
       log.error('got error on retreiving promises: ' + ex);
+      next(ex);
     }
   }
 
   async upsertCache(bookingJson: any): Promise<Booking> {
     let bookingObj = JSON.parse(JSON.stringify(bookingJson));
     log.debug('upsertCache start.... booking: ' + JSON.stringify(bookingObj));
+
+    if (!bookingObj || Object.keys(bookingObj).length === 0) {
+      throw new Error("Couldn't recognize well formed JSON of Booking Content");
+    }
 
     if (!bookingObj.id) {
       bookingObj.id = nanoid(); // generate id
