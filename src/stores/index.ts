@@ -42,15 +42,15 @@ export async function getAllBookingsInCache(): Promise<
 export async function getBookingInCache(
   booking_id: string
 ): Promise<Booking | undefined> {
-  log.debug(`getBookingInCache for booking id: ${booking_id}`);
+  log.debug(`getBookingInCache starting for booking id: ${booking_id}`);
 
   let data = undefined;
   try {
     const client = await getClient;
     data = await client.get(booking_id);
-    log.debug(`getAirportInCache, cache data for ${booking_id}: ` + data);
+    log.debug(`getBookingInCache, cache data for ${booking_id}: ` + data);
   } catch (ex) {
-    log.error("couldn't get the client:" + ex);
+    log.error("couldn't get the cache entry:" + ex);
     return undefined;
   }
 
@@ -70,7 +70,7 @@ export async function getBookingInCache(
 }
 
 /**
- * Insert/Update the airport entry in the cache
+ * Insert/Update the booking entry in the cache
  * @param booking
  */
 export async function upsertBookingInCache(booking: Booking) {
@@ -85,6 +85,21 @@ export async function upsertBookingInCache(booking: Booking) {
     const client = await getClient;
     await client.put(booking.id, data);
   } catch (ex) {
-    log.error("couldn't get the client:" + ex);
+    log.error("couldn't store the cache entry:" + ex);
+  }
+}
+
+/**
+ * Remove the booking entry in the cache
+ * @param booking
+ */
+export async function removeBookingInCache(booking_id: string) {
+  log.debug(`removeBookingInCache for booking ${booking_id}`);
+
+  try {
+    const client = await getClient;
+    await client.remove(booking_id);
+  } catch (ex) {
+    log.error("couldn't remove the cache entry" + ex);
   }
 }

@@ -23,6 +23,7 @@ class ScheduleController {
     this.router.get(this.path, this.getBookings);
     this.router.get(this.path + '/:id', this.getBooking);
     this.router.post(this.path, this.jsonParser, this.postBooking);
+    this.router.delete(this.path + '/:id', this.deleteBooking);
   }
 
   async getBookings(
@@ -63,15 +64,22 @@ class ScheduleController {
     }
   }
 
-  async getBooking(request: express.Request, response: express.Response) {
+  async getBooking(
+    request: express.Request,
+    response: express.Response,
+    next: express.NextFunction
+  ) {
     log.debug('getBooking starting...');
     const booking_id = request.params.id;
+    log.debug('getBooking, calling cache for booking_id : ' + booking_id);
+    if (!booking_id) {
+      next(new Error('Booking Id cannot be empty'));
+    }
+
     let bookingJson = bookingData.bookings.find((b) => {
       // get static json by id (used when no cache entry is present)
       return b.id === booking_id;
     });
-
-    log.debug('getBooking, calling cache for booking_id : ' + booking_id);
 
     try {
       let sc = new ScheduleController();
@@ -88,6 +96,7 @@ class ScheduleController {
       response.send(booking);
     } catch (ex) {
       log.error('got error on retreiving promises: ' + ex);
+      next(ex);
     }
   }
 
@@ -108,7 +117,7 @@ class ScheduleController {
         'postBooking, Retreived new booking successfully: ' +
           JSON.stringify(newBooking)
       );
-      response.send(newBooking);
+      response.status(201).send(newBooking);
     } catch (ex) {
       log.error('got error on retreiving promises: ' + ex);
       next(ex);
@@ -132,6 +141,29 @@ class ScheduleController {
 
     log.debug('upsertCache response: ' + JSON.stringify(bookingObj));
     return bookingObj;
+  }
+
+  async deleteBooking(
+    request: express.Request,
+    response: express.Response,
+    next: express.NextFunction
+  ) {
+    log.debug('deleteBooking starting...');
+    const booking_id = request.params.id;
+    log.debug('getBooking, calling cache for booking_id : ' + booking_id);
+
+    if (!booking_id) {
+      next(new Error('Booking Id cannot be empty'));
+    }
+
+    try {
+      await cache.removeBookingInCache(booking_id);
+      log.debug('getBooking, successfully removed the booking: ' + booking_id);
+      response.sendStatus(204);
+    } catch (ex) {
+      log.error('got error on deleting a booking: ' + ex);
+      next(ex);
+    }
   }
 }
 
