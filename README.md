@@ -29,3 +29,10 @@ Delete
 curl -X DELETE http://localhost:9004/bookings/2PxE1haE9_IZMgnIC8eTk -i
 
 ```
+
+running in Openshift
+oc new-app \
+  -n <project-name> \
+  --name=redhat-airline-booking-api nodejs:latest~https://github.com/srichandangv/redhat-airline-booking-api.git \
+  -e PORT=8080 -e NODE_ENV dev -e DATAGRID_HOST <infinispan-cluster-name>.<infinispan-project-name>.svc.cluster.local \
+  -l app=redhat-airline
